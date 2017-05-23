@@ -1,0 +1,22 @@
+[Unit]
+Description=Minecraft Server
+Documentation= 
+
+Wants=network.target
+After=network.target
+
+[Service]
+User=minecraft
+Group=minecraft
+
+WorkingDirectory=/opt/minecraft/server
+
+ExecStart=/usr/bin/screen -DmS minecraft /bin/java -Xmx4096M -Xms4096M -d64 -jar minecraft_server_current.jar nogui
+
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "say SERVER SHUTTING DOWN. Saving map..."\\015'
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "save-all"\\015'
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "stop"\\015'
+ExecStop=/bin/sleep 2
+
+[Install]
+WantedBy=multi-user.target
